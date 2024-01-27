@@ -1,0 +1,9 @@
+# Data Ingestion Configuration
+data_ingestion_config:
+  dataset_download_url: ""
+  tgz_data_dir: "tgz_dir"
+  raw_data_dir: "raw_data"
+  processed_data_dir: "processed_data"
+  train_data_dir: "train_data"
+  test_data_dir: "test_data"
+
