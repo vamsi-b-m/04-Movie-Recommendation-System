@@ -1,9 +1,12 @@
 # Data Ingestion Configuration
 data_ingestion_config:
-  dataset_download_url: ""
-  tgz_data_dir: "tgz_dir"
+  kaggle_dataset_url: "ashpalsingh1525/imdb-movies-dataset"
+  zip_data_dir: "zip_data"
   raw_data_dir: "raw_data"
   processed_data_dir: "processed_data"
-  train_data_dir: "train_data"
-  test_data_dir: "test_data"
+  processed_train_data_dir: "train_data"
+  processed_test_data_dir: "test_data"
 
+training_pipeline_config:
+  pipeline_name: "movie_recommendation"
+  artifact_dir: "artifact"
