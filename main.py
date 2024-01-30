@@ -18,8 +18,6 @@ from src.pipeline.pipeline import Pipeline
 def hell():
     pipeline = Pipeline()
     pipeline.start_data_ingestion()
-    # config = Configuration(config_file_path=CONFIG_FILE_PATH)
-    # config.get_data_ingestion_config()
 
 
 if __name__=="__main__":
