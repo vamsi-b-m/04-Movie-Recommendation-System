@@ -79,7 +79,7 @@ class DataIngestion:
             imdb_dataset['score_cat'] = imdb_dataset['score_cat'].fillna(imdb_dataset.score_cat.median())
 
             strat_train_set = None
-            start_test_set = None
+            strat_test_set = None
 
             split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 
@@ -93,7 +93,7 @@ class DataIngestion:
             
             if strat_test_set is not None:
                 os.makedirs(ingested_test_data_dir, exist_ok=True)
-                strat_train_set.to_csv(ingested_test_file_path, index=False)
+                strat_test_set.to_csv(ingested_test_file_path, index=False)
 
             data_ingestion_artifact = DataIngestionArtifact(train_file_path=ingested_train_file_path,
                                                             test_file_path=ingested_test_file_path,
