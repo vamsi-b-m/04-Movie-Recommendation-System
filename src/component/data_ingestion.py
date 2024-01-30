@@ -62,11 +62,11 @@ class DataIngestion:
             raw_data_dir = self.data_ingestion_config.raw_data_dir
             dataset_name = os.listdir(raw_data_dir)[0]
             raw_dataset_file_path = os.path.join(raw_data_dir, dataset_name)
-            processed_data_dir = self.data_ingestion_config.processed_data_dir
-            processed_train_dir = self.data_ingestion_config.processed_train_data_dir
-            processed_test_dir = self.data_ingestion_config.processed_test_data_dir
-            processed_train_file_path = os.path.join(processed_train_dir, dataset_name)
-            processed_test_file_path = os.path.join(processed_test_dir, dataset_name)
+            ingested_data_dir = self.data_ingestion_config.ingested_data_dir
+            ingested_train_data_dir = self.data_ingestion_config.ingested_train_data_dir
+            ingested_test_data_dir = self.data_ingestion_config.ingested_test_data_dir
+            ingested_train_file_path = os.path.join(ingested_train_data_dir, dataset_name)
+            ingested_test_file_path = os.path.join(ingested_test_data_dir, dataset_name)
 
             imdb_dataset = pd.read_csv(raw_dataset_file_path)
 
@@ -88,15 +88,15 @@ class DataIngestion:
                 strat_test_set = imdb_dataset.loc[test_index].drop(['score_cat'], axis=1)
 
             if strat_train_set is not None:
-                os.makedirs(processed_train_dir, exist_ok=True)
-                strat_train_set.to_csv(processed_train_file_path, index=False)
+                os.makedirs(ingested_train_data_dir, exist_ok=True)
+                strat_train_set.to_csv(ingested_train_file_path, index=False)
             
             if strat_test_set is not None:
-                os.makedirs(processed_test_dir, exist_ok=True)
-                strat_train_set.to_csv(processed_test_file_path, index=False)
+                os.makedirs(ingested_test_data_dir, exist_ok=True)
+                strat_train_set.to_csv(ingested_test_file_path, index=False)
 
-            data_ingestion_artifact = DataIngestionArtifact(train_file_path=processed_train_file_path,
-                                                            test_file_path=processed_test_file_path,
+            data_ingestion_artifact = DataIngestionArtifact(train_file_path=ingested_train_file_path,
+                                                            test_file_path=ingested_test_file_path,
                                                             is_ingested=True,
                                                             message=f"Data Ingestion Completed Successfully.")
             return data_ingestion_artifact

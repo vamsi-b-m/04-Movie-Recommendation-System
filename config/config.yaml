@@ -3,9 +3,9 @@ data_ingestion_config:
   kaggle_dataset_url: "ashpalsingh1525/imdb-movies-dataset"
   zip_data_dir: "zip_data"
   raw_data_dir: "raw_data"
-  processed_data_dir: "processed_data"
-  processed_train_data_dir: "train_data"
-  processed_test_data_dir: "test_data"
+  ingested_data_dir: "ingested_data"
+  ingested_train_data_dir: "ingested_train_data"
+  ingested_test_data_dir: "ingested_test_data"
 
 training_pipeline_config:
   pipeline_name: "movie_recommendation"

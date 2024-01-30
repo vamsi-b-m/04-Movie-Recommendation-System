@@ -28,17 +28,17 @@ class Configuration:
         data_ingestion_config_info = self.config_info[DATA_INGESTION_CONFIG_KEY]
         kaggle_dataset_url = data_ingestion_config_info[DATA_INGESTION_KAGGLE_DATASET_URL_KEY]
         zip_data_dir = os.path.join(data_ingestion_artifact_dir, data_ingestion_config_info[DATA_INGESTION_ZIP_DATA_DIR_KEY])
-        ingested_raw_data_dir = os.path.join(data_ingestion_artifact_dir, data_ingestion_config_info[DATA_INGESTION_RAW_DATA_DIR_KEY])
-        processed_data_dir = os.path.join(data_ingestion_artifact_dir, data_ingestion_config_info[DATA_INGESTION_PROCESSED_DATA_DIR])
-        processed_train_data_dir = os.path.join(data_ingestion_artifact_dir, processed_data_dir, data_ingestion_config_info[DATA_INGESTION_PROCESSED_TRAIN_DATA_DIR])
-        processed_test_data_dir = os.path.join(data_ingestion_artifact_dir, processed_data_dir, data_ingestion_config_info[DATA_INGESTION_PROCESSED_TEST_DATA_DIR])
+        raw_data_dir = os.path.join(data_ingestion_artifact_dir, data_ingestion_config_info[DATA_INGESTION_RAW_DATA_DIR_KEY])
+        ingested_data_dir = os.path.join(data_ingestion_artifact_dir, data_ingestion_config_info[DATA_INGESTION_INGESTED_DATA_DIR])
+        ingested_train_data_dir = os.path.join(data_ingestion_artifact_dir, ingested_data_dir, data_ingestion_config_info[DATA_INGESTION_INGESTED_TRAIN_DATA_DIR])
+        ingested_test_data_dir = os.path.join(data_ingestion_artifact_dir, ingested_data_dir, data_ingestion_config_info[DATA_INGESTION_INGESTED_TEST_DATA_DIR])
 
         data_ingestion_config = DataIngestionConfig(kaggle_dataset_url=kaggle_dataset_url,
                                                     zip_data_dir=zip_data_dir,
-                                                    raw_data_dir=ingested_raw_data_dir,
-                                                    processed_data_dir=processed_data_dir,
-                                                    processed_train_data_dir=processed_train_data_dir,
-                                                    processed_test_data_dir=processed_test_data_dir
+                                                    raw_data_dir=raw_data_dir,
+                                                    ingested_data_dir=ingested_data_dir,
+                                                    ingested_train_data_dir=ingested_train_data_dir,
+                                                    ingested_test_data_dir=ingested_test_data_dir
                                                     )
         return data_ingestion_config
 
