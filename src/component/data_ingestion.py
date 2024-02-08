@@ -1,32 +1,32 @@
-import os, sys
+import os
 import logging
 import zipfile
-
-import pandas as pd
-import numpy as np
-
-from sklearn.model_selection import StratifiedShuffleSplit
 from kaggle.api.kaggle_api_extended import KaggleApi
-
 from src.entity.config_entity import DataIngestionConfig
 from src.entity.artifact_entity import DataIngestionArtifact
 
-
 class DataIngestion:
-    
-    def __init__(self, data_ingestion_config:DataIngestionConfig) -> None:
+    def __init__(self, config: DataIngestionConfig) -> None:
+        """
+        Initialize the DataIngestion instance.
+        Args:
+            config (DataIngestionConfig): Configuration for data ingestion.
+        """
+        self.config = config
+        logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+
+    def download_dataset(self):
+        """
+        Download the dataset from Kaggle.
+        Returns:
+            str: Path to the downloaded zip file.
+        """
         try:
-            logging.info(f"{'='*20}Data Ingestion log Started.{'='*20}\n\n")
-            self.data_ingestion_config = data_ingestion_config
-        except Exception as e:
-            raise Exception(e, sys) from e
-        
-    def download_dataset_zip_file(self):
-        try:
+            logging.info("Downloading dataset from Kaggle...")
             api = KaggleApi()
             api.authenticate()
-            dataset_url = self.data_ingestion_config.kaggle_dataset_url
-            zip_data_dir = self.data_ingestion_config.zip_data_dir
+            dataset_url = self.config.kaggle_dataset_url
+            zip_data_dir = self.config.zip_data_dir
 
             if os.path.exists(zip_data_dir):
                 os.remove(zip_data_dir)
@@ -38,75 +38,75 @@ class DataIngestion:
             file_name = os.listdir(zip_data_dir)[0]
             zip_file_path = os.path.join(zip_data_dir, file_name)
 
+            logging.info("Dataset downloaded successfully.")
             return zip_file_path
 
         except Exception as e:
-            raise Exception(e, sys)
+            logging.error(f"Error downloading dataset: {str(e)}")
+            raise e
 
     def extract_dataset(self, zip_file_path: str):
+        """
+        Extract the dataset from the zip file.
+        Args:
+            zip_file_path (str): Path to the zip file.
+        Returns:
+            str: Path to the extracted dataset.
+        """
         try:
-            raw_data_dir = self.data_ingestion_config.raw_data_dir
+            extracted_data_dir = self.config.extracted_data_dir
 
-            if os.path.exists(raw_data_dir):
-                os.remove(raw_data_dir)
+            if os.path.exists(extracted_data_dir):
+                os.remove(extracted_data_dir)
 
-            os.makedirs(raw_data_dir, exist_ok=True)
+            os.makedirs(extracted_data_dir, exist_ok=True)
 
-            with zipfile.ZipFile(zip_file_path,"r") as zip_ref:
-                zip_ref.extractall(raw_data_dir)
+            logging.info("Extracting dataset...")
+            with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
+                zip_ref.extractall(extracted_data_dir)
+
+            dataset_name = os.listdir(extracted_data_dir)[0]
+            dataset_path = os.path.join(extracted_data_dir, dataset_name)
+
+            logging.info("Dataset extracted successfully.")
+            return dataset_path
+
         except Exception as e:
-            raise Exception(e, sys)
+            logging.error(f"Error extracting dataset: {str(e)}")
+            raise e
 
-    def data_splitting(self):
+    def ingest_data(self):
+        """
+        Ingest the data by downloading and extracting the dataset.
+        Returns:
+            DataIngestionArtifact: Artifact containing information about the ingestion process.
+        """
         try:
-            raw_data_dir = self.data_ingestion_config.raw_data_dir
-            dataset_name = os.listdir(raw_data_dir)[0]
-            raw_dataset_file_path = os.path.join(raw_data_dir, dataset_name)
-            ingested_data_dir = self.data_ingestion_config.ingested_data_dir
-            ingested_train_data_dir = self.data_ingestion_config.ingested_train_data_dir
-            ingested_test_data_dir = self.data_ingestion_config.ingested_test_data_dir
-            ingested_train_file_path = os.path.join(ingested_train_data_dir, dataset_name)
-            ingested_test_file_path = os.path.join(ingested_test_data_dir, dataset_name)
+            zip_file_path = self.download_dataset()
+            dataset_path = self.extract_dataset(zip_file_path)
+            artifact = DataIngestionArtifact(
+                dataset_path=dataset_path,
+                is_ingested=True,
+                message="Data ingestion completed successfully."
+            )
+            return artifact
 
-            imdb_dataset = pd.read_csv(raw_dataset_file_path)
-
-            imdb_dataset['score_cat'] = pd.cut(
-                imdb_dataset["score"],
-                bins = [0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0, 95.0, np.inf],
-                labels = [1, 2, 3, 4, 5, 6, 7, 8]
-            ).astype(float)
-
-            imdb_dataset['score_cat'] = imdb_dataset['score_cat'].fillna(imdb_dataset.score_cat.median())
-
-            strat_train_set = None
-            strat_test_set = None
-
-            split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-
-            for train_index, test_index in split.split(imdb_dataset, imdb_dataset['score_cat']):
-                strat_train_set = imdb_dataset.loc[train_index].drop(['score_cat'], axis=1)
-                strat_test_set = imdb_dataset.loc[test_index].drop(['score_cat'], axis=1)
-
-            if strat_train_set is not None:
-                os.makedirs(ingested_train_data_dir, exist_ok=True)
-                strat_train_set.to_csv(ingested_train_file_path, index=False)
-            
-            if strat_test_set is not None:
-                os.makedirs(ingested_test_data_dir, exist_ok=True)
-                strat_test_set.to_csv(ingested_test_file_path, index=False)
-
-            data_ingestion_artifact = DataIngestionArtifact(train_file_path=ingested_train_file_path,
-                                                            test_file_path=ingested_test_file_path,
-                                                            is_ingested=True,
-                                                            message=f"Data Ingestion Completed Successfully.")
-            return data_ingestion_artifact
         except Exception as e:
-            raise Exception(e, sys) from e
+            logging.error(f"Data ingestion failed: {str(e)}")
+            raise e
 
     def initiate_data_ingestion(self):
+        """
+        Initiate the data ingestion process by downloading and extracting the dataset.
+        Returns:
+            DataIngestionArtifact: Artifact containing information about the ingestion process.
+        """
         try:
-            zip_file_path = self.download_dataset_zip_file()
-            self.extract_dataset(zip_file_path=zip_file_path)
-            self.data_splitting()
+            logging.info("Data ingestion process initiated.")
+            artifact = self.ingest_data()
+            logging.info("Data ingestion process completed.")
+            return artifact
+
         except Exception as e:
-            raise Exception(e, sys) from e
+            logging.error(f"Data ingestion process failed: {str(e)}")
+            raise e

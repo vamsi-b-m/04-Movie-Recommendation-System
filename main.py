@@ -8,16 +8,12 @@
 import os, sys
 from src.constant import *
 from src.utils import *
-from src.constant import *
-from kaggle.api.kaggle_api_extended import KaggleApi
-from src.configuration.configuration import Configuration
-from src.component.data_ingestion import DataIngestion
 from src.pipeline.pipeline import Pipeline
 
 
 def hell():
     pipeline = Pipeline()
-    pipeline.start_data_ingestion()
+    pipeline.run_pipeline()
 
 
 if __name__=="__main__":

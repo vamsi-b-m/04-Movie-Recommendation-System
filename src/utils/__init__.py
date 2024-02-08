@@ -1,6 +1,8 @@
 import os, sys
 import yaml
 
+import pandas as pd
+
 
 def read_yaml_file(file_path:str)->dict:
     try:
@@ -9,3 +11,9 @@ def read_yaml_file(file_path:str)->dict:
     except Exception as e:
         raise Exception(e, sys) from e
     
+def load_data(file_path:str) -> pd.DataFrame:
+    try:
+        dataframe = pd.read_csv(file_path=file_path)
+        return dataframe
+    except Exception as e:
+        raise Exception(e, sys) from e
