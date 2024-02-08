@@ -6,7 +6,6 @@ from src.entity.config_entity import DataIngestionConfig, DataCleaningConfig, Da
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
-
 class Configuration:
 
     def __init__(self, config_file_path:str=CONFIG_FILE_PATH, current_time_stamp:str=CURRENT_TIME_STAMP) -> None:
@@ -49,9 +48,11 @@ class Configuration:
                 self.time_stamp,
                 DATA_CLEANING_ARTIFACT_DIR
             )
-            cleaned_data_dir = os.path.join(data_cleaning_artifact_dir,data_cleaning_config_info[DATA_CLEANING_CLEANED_DATA_DIR])
+            cleaned_data_dir = os.path.join(data_cleaning_artifact_dir, data_cleaning_config_info[DATA_CLEANING_CLEANED_DATA_DIR])
+            cleaned_data_file_name = data_cleaning_config_info[DATA_CLEANING_CLEANED_DATA_FILE_NAME]
+            cleaned_data_file_path = os.path.join(cleaned_data_dir, cleaned_data_file_name)
 
-            data_cleaning_config = DataCleaningConfig(cleaned_data_dir=cleaned_data_dir)
+            data_cleaning_config = DataCleaningConfig(cleaned_data_dir=cleaned_data_dir, cleaned_data_file_path=cleaned_data_file_path)
             return data_cleaning_config
         except Exception as e:
             raise Exception(e, sys) from e

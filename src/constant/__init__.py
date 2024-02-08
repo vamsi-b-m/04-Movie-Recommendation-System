@@ -23,7 +23,8 @@ DATA_INGESTION_INGESTED_DATA_DIR = "ingested_data_dir"
 # Data Cleaning Related Constants
 DATA_CLEANING_CONFIG_KEY = "data_cleaning_config"
 DATA_CLEANING_ARTIFACT_DIR = "data_cleaning"
-DATA_CLEANING_CLEANED_DATA_DIR = "cleaned_data"
+DATA_CLEANING_CLEANED_DATA_DIR = "cleaned_data_dir"
+DATA_CLEANING_CLEANED_DATA_FILE_NAME = "cleaned_data_file_name"
 
 # Data Validation Related Variables
 DATA_VALIDATION_CONFIG_KEY = "data_validation_config"

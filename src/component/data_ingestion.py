@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import zipfile
 from kaggle.api.kaggle_api_extended import KaggleApi
@@ -6,6 +7,7 @@ from src.entity.config_entity import DataIngestionConfig
 from src.entity.artifact_entity import DataIngestionArtifact
 
 class DataIngestion:
+
     def __init__(self, config: DataIngestionConfig) -> None:
         """
         Initialize the DataIngestion instance.
@@ -13,16 +15,16 @@ class DataIngestion:
             config (DataIngestionConfig): Configuration for data ingestion.
         """
         self.config = config
+        self.logger = logging.getLogger(__name__)
         logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
-    def download_dataset(self):
+    def download_zip_file(self):
         """
         Download the dataset from Kaggle.
         Returns:
             str: Path to the downloaded zip file.
         """
         try:
-            logging.info("Downloading dataset from Kaggle...")
             api = KaggleApi()
             api.authenticate()
             dataset_url = self.config.kaggle_dataset_url
@@ -32,18 +34,18 @@ class DataIngestion:
                 os.remove(zip_data_dir)
 
             os.makedirs(zip_data_dir, exist_ok=True)
-
+            self.logger.info("Downloading dataset from Kaggle repo %s.", dataset_url)
             api.dataset_download_files(dataset=dataset_url, path=zip_data_dir, unzip=False)
 
             file_name = os.listdir(zip_data_dir)[0]
             zip_file_path = os.path.join(zip_data_dir, file_name)
 
-            logging.info("Dataset downloaded successfully.")
+            self.logger.info("Dataset downloaded successfully.")
             return zip_file_path
 
         except Exception as e:
-            logging.error(f"Error downloading dataset: {str(e)}")
-            raise e
+            self.logger.exception(f"Error downloading dataset: {str(e)}")
+            raise
 
     def extract_dataset(self, zip_file_path: str):
         """
@@ -54,26 +56,26 @@ class DataIngestion:
             str: Path to the extracted dataset.
         """
         try:
-            extracted_data_dir = self.config.extracted_data_dir
+            ingested_data_dir = self.config.ingested_data_dir
 
-            if os.path.exists(extracted_data_dir):
-                os.remove(extracted_data_dir)
+            if os.path.exists(ingested_data_dir):
+                os.remove(ingested_data_dir)
 
-            os.makedirs(extracted_data_dir, exist_ok=True)
+            os.makedirs(ingested_data_dir, exist_ok=True)
 
-            logging.info("Extracting dataset...")
+            self.logger.info("Extracting dataset...")
             with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
-                zip_ref.extractall(extracted_data_dir)
+                zip_ref.extractall(ingested_data_dir)
 
-            dataset_name = os.listdir(extracted_data_dir)[0]
-            dataset_path = os.path.join(extracted_data_dir, dataset_name)
+            ingested_dataset_name = os.listdir(ingested_data_dir)[0]
+            ingested_dataset_path = os.path.join(ingested_data_dir, ingested_dataset_name)
 
-            logging.info("Dataset extracted successfully.")
-            return dataset_path
+            self.logger.info("Dataset Extracted and Ingested successfully at %s.", ingested_dataset_path)
+            return ingested_dataset_path
 
         except Exception as e:
-            logging.error(f"Error extracting dataset: {str(e)}")
-            raise e
+            self.logger.exception(f"Error extracting dataset: {str(e)}")
+            raise
 
     def ingest_data(self):
         """
@@ -82,18 +84,18 @@ class DataIngestion:
             DataIngestionArtifact: Artifact containing information about the ingestion process.
         """
         try:
-            zip_file_path = self.download_dataset()
+            zip_file_path = self.download_zip_file()
             dataset_path = self.extract_dataset(zip_file_path)
             artifact = DataIngestionArtifact(
-                dataset_path=dataset_path,
+                ingested_data_file_path=dataset_path,
                 is_ingested=True,
                 message="Data ingestion completed successfully."
             )
             return artifact
 
         except Exception as e:
-            logging.error(f"Data ingestion failed: {str(e)}")
-            raise e
+            self.logger.exception(f"Data ingestion failed: {str(e)}")
+            raise
 
     def initiate_data_ingestion(self):
         """
@@ -102,11 +104,11 @@ class DataIngestion:
             DataIngestionArtifact: Artifact containing information about the ingestion process.
         """
         try:
-            logging.info("Data ingestion process initiated.")
-            artifact = self.ingest_data()
-            logging.info("Data ingestion process completed.")
-            return artifact
+            self.logger.info("Data ingestion process initiated.")
+            data_ingestion_artifact = self.ingest_data()
+            self.logger.info("Data ingestion process completed.\n")
+            return data_ingestion_artifact
 
         except Exception as e:
-            logging.error(f"Data ingestion process failed: {str(e)}")
-            raise e
+            self.logger.exception(f"Data ingestion process failed: {str(e)}\n")
+            raise

@@ -13,7 +13,13 @@ def read_yaml_file(file_path:str)->dict:
     
 def load_data(file_path:str) -> pd.DataFrame:
     try:
-        dataframe = pd.read_csv(file_path=file_path)
+        dataframe = pd.read_csv(file_path)
         return dataframe
+    except Exception as e:
+        raise Exception(e, sys) from e
+    
+def save_data(data, file_path: str):
+    try:
+        data.to_csv(file_path, index=False)
     except Exception as e:
         raise Exception(e, sys) from e

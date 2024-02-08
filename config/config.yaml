@@ -6,7 +6,7 @@ data_ingestion_config:
 
 data_cleaning_config:
   cleaned_data_dir: "cleaned_data"
-
+  cleaned_data_file_name: "cleaned_data.csv"
 
 data_validation_config:
   schema_dir: config
