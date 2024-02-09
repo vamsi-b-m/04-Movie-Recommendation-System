@@ -8,13 +8,13 @@ from src.entity.artifact_entity import DataIngestionArtifact
 
 class DataIngestion:
 
-    def __init__(self, config: DataIngestionConfig) -> None:
+    def __init__(self, data_ingestion_config: DataIngestionConfig) -> None:
         """
         Initialize the DataIngestion instance.
         Args:
             config (DataIngestionConfig): Configuration for data ingestion.
         """
-        self.config = config
+        self.data_ingestion_config = data_ingestion_config
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
@@ -27,8 +27,8 @@ class DataIngestion:
         try:
             api = KaggleApi()
             api.authenticate()
-            dataset_url = self.config.kaggle_dataset_url
-            zip_data_dir = self.config.zip_data_dir
+            dataset_url = self.data_ingestion_config.kaggle_dataset_url
+            zip_data_dir = self.data_ingestion_config.zip_data_dir
 
             if os.path.exists(zip_data_dir):
                 os.remove(zip_data_dir)
@@ -56,7 +56,7 @@ class DataIngestion:
             str: Path to the extracted dataset.
         """
         try:
-            ingested_data_dir = self.config.ingested_data_dir
+            ingested_data_dir = self.data_ingestion_config.ingested_data_dir
 
             if os.path.exists(ingested_data_dir):
                 os.remove(ingested_data_dir)

@@ -6,6 +6,7 @@ from src.entity.artifact_entity import DataIngestionArtifact, DataCleaningArtifa
 from src.entity.config_entity import DataIngestionConfig, DataCleaningConfig
 
 class DataCleaning:
+    
     def __init__(self, data_ingestion_artifact: DataIngestionArtifact, data_cleaning_config: DataCleaningConfig) -> None:
         try:
             self.data_ingestion_artifact = data_ingestion_artifact
@@ -24,7 +25,7 @@ class DataCleaning:
             self.logger.exception("Error occurred while reading data", exc_info=True)
             raise
 
-    def create_year_col(self):
+    def feature_generator(self):
         try:
             self.data['year'] = self.data['date_x'].apply(lambda x: str(x).split("/")[2].split()[0])
             self.data['year'] = self.data['year'].astype(int)
@@ -77,7 +78,7 @@ class DataCleaning:
         try:
             self.logger.info("Data Cleaning Process Initiated")
             self.read_data()
-            self.create_year_col()
+            self.feature_generator()
             self.feature_selection()
             self.handle_duplicates()
             self.handle_null_values()
