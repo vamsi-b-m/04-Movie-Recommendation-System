@@ -25,18 +25,9 @@ class DataCleaning:
             self.logger.exception("Error occurred while reading data", exc_info=True)
             raise
 
-    def feature_generator(self):
-        try:
-            self.data['year'] = self.data['date_x'].apply(lambda x: str(x).split("/")[2].split()[0])
-            self.data['year'] = self.data['year'].astype(int)
-            self.logger.info("Year column created successfully")
-        except Exception as e:
-            self.logger.exception("Error occurred during creating year column", exc_info=True)
-            raise
-
     def feature_selection(self):
         try:
-            self.data = self.data[['names', 'overview', 'genre', 'year']]
+            self.data = self.data[['names', 'overview', 'genre', 'date_x']]
             self.logger.info("Selected features successfully")
         except Exception as e:
             self.logger.exception("Error occurred during feature selection", exc_info=True)
@@ -44,7 +35,7 @@ class DataCleaning:
 
     def handle_duplicates(self):
         try:
-            self.data = self.data[~self.data.duplicated(subset=['names', 'overview', 'genre', 'year'], keep='first')]
+            self.data = self.data[~self.data.duplicated(subset=['names', 'overview', 'genre', 'date_x'], keep='first')]
             self.data=self.data.reset_index(drop=True)
             self.logger.info("Duplicates handled successfully")
         except Exception as e:
@@ -61,7 +52,7 @@ class DataCleaning:
             self.logger.exception("Error occurred during handling null values", exc_info=True)
             raise
         
-    def save_data(self):
+    def save_cleaned_data(self):
         try:
             cleaned_data_dir = self.data_cleaning_config.cleaned_data_dir
             os.makedirs(cleaned_data_dir, exist_ok=True)
@@ -78,11 +69,10 @@ class DataCleaning:
         try:
             self.logger.info("Data Cleaning Process Initiated")
             self.read_data()
-            self.feature_generator()
             self.feature_selection()
             self.handle_duplicates()
             self.handle_null_values()
-            cleaned_data_file_path = self.save_data()
+            cleaned_data_file_path = self.save_cleaned_data()
             data_cleaning_artifact = DataCleaningArtifact(
                 cleaned_data_file_path=cleaned_data_file_path,
                 is_cleaned=True,

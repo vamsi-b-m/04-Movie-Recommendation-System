@@ -92,7 +92,14 @@ class Configuration:
                 data_validation_config[DATA_VALIDATION_REPORT_PAGE_FILE_NAME_KEY]
             )
 
+            validated_data_dir = os.path.join(data_validation_artifact_dir, 
+                                              data_validation_config[DATA_VALIDATION_VALIDATED_DATA_DIR_KEY]
+                                              )
+            validated_data_file_path = os.path.join(validated_data_dir, data_validation_config[DATA_VALIDATION_VALIDATED_DATA_FILE_NAME])
+
             data_validation_config = DataValidationConfig(
+                                                        validated_data_dir=validated_data_dir,
+                                                        validated_data_file_path=validated_data_file_path,
                                                         report_file_dir=report_file_dir,
                                                         schema_file_path=schema_file_path, 
                                                         report_file_path=report_file_path, 
@@ -116,11 +123,16 @@ class Configuration:
             data_manipulation_config = self.config_info[DATA_MANIPULATION_CONFIG_KEY]
 
             processed_data_dir = os.path.join(data_manipulation_artifact_dir, data_manipulation_config[DATA_MANIPULATION_PROCESSED_DATA_DIR])
+            processed_data_file_path = os.path.join(processed_data_dir, data_manipulation_config[DATA_MANIPULATION_PROCESSED_DATA_FILE_NAME])
 
-            processed_pickle_data_dir = os.path.join(processed_data_dir, data_manipulation_config[DATA_MANIPULATION_PICKLE_FILE_DIR])
+            processed_pickle_data_dir = os.path.join(data_manipulation_artifact_dir, data_manipulation_config[DATA_MANIPULATION_PICKLE_FILE_DIR])
+            processed_pickle_file_name = data_manipulation_config[DATA_MANIPULATION_PROCESSED_PICKLE_FILE_NAME]
+            processed_pickle_file_path = os.path.join(processed_pickle_data_dir, processed_pickle_file_name)
 
             data_manipulation_config = DataManipulationConfig(processed_data_dir=processed_data_dir,
-                                                              processed_pickle_data_dir=processed_pickle_data_dir
+                                                              processed_data_file_path=processed_data_file_path,
+                                                              processed_pickle_data_dir=processed_pickle_data_dir,
+                                                              processed_pickle_file_path=processed_pickle_file_path
                                                               )
             return data_manipulation_config
         except Exception as e:

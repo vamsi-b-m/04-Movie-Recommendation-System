@@ -1,10 +1,11 @@
 import os, sys
 from src.configuration.configuration import Configuration
 from src.component.data_ingestion import DataIngestion
-from src.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataCleaningArtifact
+from src.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataCleaningArtifact, DataManipulationArtifact
 from src.entity.config_entity import DataCleaningConfig
 from src.component.data_validation import DataValidation
 from src.component.data_cleaning import DataCleaning
+from src.component.data_manipulation import DataManipulation
 
 class Pipeline:
     
@@ -22,7 +23,7 @@ class Pipeline:
         except Exception as e:
             raise Exception(e, sys) from e
 
-    def start_data_cleaning(self, data_ingestion_artifact=DataIngestionArtifact):
+    def start_data_cleaning(self, data_ingestion_artifact: DataIngestionArtifact) -> DataCleaningArtifact:
         try:
             data_cleaning = DataCleaning(data_cleaning_config=self.config.get_data_cleaning_config(),
                                          data_ingestion_artifact=data_ingestion_artifact)
@@ -31,8 +32,7 @@ class Pipeline:
         except Exception as e:
             raise Exception(e, sys) from e
         
-    def start_data_validation(self, data_cleaning_artifact: DataCleaningArtifact) \
-            -> DataValidationArtifact:
+    def start_data_validation(self, data_cleaning_artifact: DataCleaningArtifact) -> DataValidationArtifact:
         try:
             data_validation = DataValidation(data_validation_config=self.config.get_data_validation_config(),
                                              data_cleaning_artifact=data_cleaning_artifact
@@ -41,8 +41,16 @@ class Pipeline:
         except Exception as e:
             raise Exception(e, sys) from e
         
+    def start_data_manipulation(self, data_validation_artifact: DataValidationArtifact) -> DataManipulationArtifact:
+        try:
+            data_manipulation = DataManipulation(data_manipulation_config=self.config.get_data_manipulation_config(),
+                                                 data_validation_artifact=data_validation_artifact)
+            return data_manipulation.initiate_data_manipulation()
+        except Exception as e:
+            raise Exception(e, sys) from e
+        
     def run_pipeline(self):
         data_ingestion_artifact = self.start_data_ingestion()
         data_cleaning_artifact = self.start_data_cleaning(data_ingestion_artifact=data_ingestion_artifact)
         data_validation_artifact = self.start_data_validation(data_cleaning_artifact=data_cleaning_artifact)
-        #data_validation_artifact = self.start_data_validation(data_ingestion_artifact=data_ingestion_artifact)
+        data_manipulation_artifact = self.start_data_manipulation(data_validation_artifact=data_validation_artifact)

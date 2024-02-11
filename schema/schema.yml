@@ -2,4 +2,4 @@ columns:
   names: object
   overview: object
   genre: object
-  year: int64
+  date: object

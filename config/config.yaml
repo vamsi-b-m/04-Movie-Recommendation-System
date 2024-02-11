@@ -15,11 +15,16 @@ schema_config:
 data_validation_config:
   report_file_name: report.json
   report_page_file_name: report.html
+  validated_data_dir: "validated_data"
+  validated_data_file_name: "validated_data.csv"
 
 data_manipulation_config:
   processed_data_dir: "processed_data"
-  processed_pickle_dir: "pickle"
-  processed_data_pickle_file_name: "processed_data_pickle.pkl"
+  processed_data_file_name: "processed_data.csv"
+  processed_pickle_data_dir: "pickle_data"
+  processed_data_pickle_file_name: "processed_pickle.pkl"
+
+model_training_config
 
 training_pipeline_config:
   pipeline_name: "movie_recommendation"
