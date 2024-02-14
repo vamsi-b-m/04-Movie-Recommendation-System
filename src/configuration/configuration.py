@@ -2,7 +2,7 @@ import os, sys
 from src.constant import *
 from src.utils import *
 from src.constant import *
-from src.entity.config_entity import DataIngestionConfig, DataCleaningConfig, DataValidationConfig, DataManipulationConfig, TrainingPipelineConfig
+from src.entity.config_entity import DataIngestionConfig, DataCleaningConfig, DataValidationConfig, DataManipulationConfig, ModelGeneratorConfig, TrainingPipelineConfig
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
@@ -138,6 +138,23 @@ class Configuration:
         except Exception as e:
             raise Exception(e, sys) from e  
 
+    def get_model_generator_config(self) -> ModelGeneratorConfig:
+        try:
+            model_dir = os.path.join(ROOT_DIR, MODEL_DIR)
+
+            model_generation_dir = os.path.join(model_dir, MODEL_GENERATOR_ARTIFACT_DIR)
+
+            model_generation_config = self.config_info[MODEL_GENERATOR_CONFIG_KEY]
+
+            model_generated_data_dir = os.path.join(model_generation_dir, model_generation_config[MODEL_GENERATOR_GENERATED_DATA_DIR])
+            model_generated_data_file_name = model_generation_config[MODEL_GENERATOR_GENERATED_DATA_FILE_NAME]
+            model_generated_data_file_path = os.path.join(model_generated_data_dir, model_generated_data_file_name)
+
+            model_generation_config = ModelGeneratorConfig(model_generated_data_dir=model_generated_data_dir,
+                                                           model_generated_data_file_path=model_generated_data_file_path)
+            return model_generation_config
+        except Exception as e:
+            raise Exception(e, sys) from e
 
     def get_training_pipeline_config(self) -> TrainingPipelineConfig:
         training_pipeline_config = self.config_info[TRAINING_PIPELINE_CONFIG_KEY]

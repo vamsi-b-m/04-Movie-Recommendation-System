@@ -24,8 +24,17 @@ data_manipulation_config:
   processed_pickle_data_dir: "pickle_data"
   processed_data_pickle_file_name: "processed_pickle.pkl"
 
-model_training_config
+model_generator_config:
+  generated_data_dir : "generated_data"
+  generated_data_file_name : "generated_data.csv"
 
+model_evaluation_config:
+  model_evaluation_file_name: model_evaluation.yaml
+
+model_pusher_config:
+  model_export_dir: saved_models
+
+ 
 training_pipeline_config:
   pipeline_name: "movie_recommendation"
   artifact_dir: "artifact"

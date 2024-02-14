@@ -6,6 +6,7 @@ from src.entity.config_entity import DataCleaningConfig
 from src.component.data_validation import DataValidation
 from src.component.data_cleaning import DataCleaning
 from src.component.data_manipulation import DataManipulation
+from src.component.model_generator import ModelGenerator
 
 class Pipeline:
     
@@ -48,9 +49,18 @@ class Pipeline:
             return data_manipulation.initiate_data_manipulation()
         except Exception as e:
             raise Exception(e, sys) from e
+    
+    def start_model_training(self, data_manipulation_artifact: DataManipulationArtifact):
+        try:
+            model_trainer =  ModelGenerator(model_generation_config=self.config.get_model_generator_config(),
+                                            data_manipulation_artifact=data_manipulation_artifact)
+            return model_trainer.initiate_model_training()
+        except Exception as e:
+            raise Exception(e, sys) from e 
         
     def run_pipeline(self):
         data_ingestion_artifact = self.start_data_ingestion()
         data_cleaning_artifact = self.start_data_cleaning(data_ingestion_artifact=data_ingestion_artifact)
         data_validation_artifact = self.start_data_validation(data_cleaning_artifact=data_cleaning_artifact)
         data_manipulation_artifact = self.start_data_manipulation(data_validation_artifact=data_validation_artifact)
+        self.start_model_training(data_manipulation_artifact=data_manipulation_artifact)

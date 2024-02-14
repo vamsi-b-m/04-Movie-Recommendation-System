@@ -85,7 +85,7 @@ class DataManipulation:
             self.logger.info("Shape of the vector %s", vector.shape)
             self.logger.info("Calculating cosine similarity for the vector")
             similarity = cosine_similarity(vector)
-            
+
             return vector, similarity
         except Exception as e:
             raise Exception(e, sys) from e
@@ -99,9 +99,8 @@ class DataManipulation:
             processed_pickle_data_file_path = self.save_pickle_file()
             vector, similarity = self.vectorization()
             self.is_manipulated = True
-            return DataManipulationArtifact(processed_file_path=processed_data_file_path, 
+            return DataManipulationArtifact(processed_data_file_path=processed_data_file_path, 
                                             processed_pickle_file_path=processed_pickle_data_file_path,
-                                            vector=vector,
                                             similarity=similarity,
                                             is_manipulated=self.is_manipulated,
                                             message="Data Manipulation Completed")

@@ -3,6 +3,7 @@ from datetime import datetime
 
 ROOT_DIR = os.getcwd() #to get current working directory
 DATA_DIR = "data"
+MODEL_DIR = "model"
 CONFIG_DIR = "config"
 CONFIG_FILE_NAME = "config.yaml"
 CONFIG_FILE_PATH = os.path.join(ROOT_DIR, CONFIG_DIR, CONFIG_FILE_NAME)
@@ -47,3 +48,9 @@ DATA_MANIPULATION_PROCESSED_DATA_DIR = "processed_data_dir"
 DATA_MANIPULATION_PROCESSED_DATA_FILE_NAME = "processed_data_file_name"
 DATA_MANIPULATION_PICKLE_FILE_DIR = "processed_pickle_data_dir" 
 DATA_MANIPULATION_PROCESSED_PICKLE_FILE_NAME = "processed_data_pickle_file_name"
+
+# Model Generator Related Variable
+MODEL_GENERATOR_CONFIG_KEY = "model_generator_config"
+MODEL_GENERATOR_ARTIFACT_DIR = "model_generation"
+MODEL_GENERATOR_GENERATED_DATA_DIR = "generated_data_dir"
+MODEL_GENERATOR_GENERATED_DATA_FILE_NAME = "generated_data_file_name"
