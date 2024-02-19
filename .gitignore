@@ -164,4 +164,4 @@ cython_debug/
 
 # Modules
 data/artifact
-model/
+git commit -m "Update .gitignore to ignore model/ directory"model/

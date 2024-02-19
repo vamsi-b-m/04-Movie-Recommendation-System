@@ -1,19 +1,41 @@
-# 1. Data Collection
-# 2. Data Ingestion
-# 3. Data Validation
-# 4. Data Visualization
-# 5. Model Initialization
-# 6. Model Evaluation
-# 7. Model Push
-import os, sys
+import os
+import sys
+import time  # Import the time module
+
+from flask import Flask, render_template, request
 from src.constant import *
 from src.utils import *
 from src.pipeline.pipeline import Pipeline
 
+app = Flask(__name__)
 
-def hell():
-    pipeline = Pipeline()
-    pipeline.run_pipeline()
+@app.route("/")
+def index():
+    try:
+        return render_template("index.html")
+    except Exception as e:
+        raise Exception(e, sys)
+
+@app.route('/process', methods=['GET'])
+def get_posters():
+    try:
+        movie_name = request.args.get('search')
+        movie_genre = request.args.get('genre')
+        movie_posters = start_pipeline(movie_name=movie_name, movie_genre=movie_genre)
+        return render_template("index.html", movie_posters=movie_posters, movie_genre=movie_genre)
+    except Exception as e:
+        raise Exception(e, sys) from e
+
+def start_pipeline(movie_name, movie_genre):
+    try:
+        # Generate timestamp dynamically
+        timestamp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        pipeline = Pipeline(movie_name=movie_name, movie_genre=movie_genre)
+        model_generation = pipeline.run_pipeline()
+        posters_url_list = model_generation.posters_url_list
+        return posters_url_list
+    except Exception as e:
+        raise Exception(e, sys) from e
 
 if __name__=="__main__":
-    hell()
+    app.run(debug=False, use_reloader=False)

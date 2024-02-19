@@ -1,8 +1,8 @@
 import os, sys
+import time
 from src.configuration.configuration import Configuration
 from src.component.data_ingestion import DataIngestion
 from src.entity.artifact_entity import DataIngestionArtifact, DataValidationArtifact, DataCleaningArtifact, DataManipulationArtifact
-from src.entity.config_entity import DataCleaningConfig
 from src.component.data_validation import DataValidation
 from src.component.data_cleaning import DataCleaning
 from src.component.data_manipulation import DataManipulation
@@ -10,9 +10,11 @@ from src.component.model_generator import ModelGenerator
 
 class Pipeline:
     
-    def __init__(self, config : Configuration = Configuration()) -> None:
+    def __init__(self, movie_name, movie_genre, config : Configuration = Configuration()) -> None:
         try:
             self.config = config
+            self.movie_name = movie_name
+            self.movie_genre = movie_genre
         except Exception as e:
             raise Exception(e, sys) from e
         
@@ -50,17 +52,21 @@ class Pipeline:
         except Exception as e:
             raise Exception(e, sys) from e
     
-    def start_model_training(self, data_manipulation_artifact: DataManipulationArtifact):
+    def start_model_generation(self, data_manipulation_artifact: DataManipulationArtifact):
         try:
-            model_trainer =  ModelGenerator(model_generation_config=self.config.get_model_generator_config(),
+            model_trainer =  ModelGenerator(movie_name=self.movie_name, movie_genre=self.movie_genre,model_generation_config=self.config.get_model_generator_config(),
                                             data_manipulation_artifact=data_manipulation_artifact)
             return model_trainer.initiate_model_training()
         except Exception as e:
-            raise Exception(e, sys) from e 
+            raise Exception(e, sys) from e
         
     def run_pipeline(self):
-        data_ingestion_artifact = self.start_data_ingestion()
-        data_cleaning_artifact = self.start_data_cleaning(data_ingestion_artifact=data_ingestion_artifact)
-        data_validation_artifact = self.start_data_validation(data_cleaning_artifact=data_cleaning_artifact)
-        data_manipulation_artifact = self.start_data_manipulation(data_validation_artifact=data_validation_artifact)
-        self.start_model_training(data_manipulation_artifact=data_manipulation_artifact)
+        try:
+            data_ingestion_artifact = self.start_data_ingestion()
+            data_cleaning_artifact = self.start_data_cleaning(data_ingestion_artifact=data_ingestion_artifact)
+            data_validation_artifact = self.start_data_validation(data_cleaning_artifact=data_cleaning_artifact)
+            data_manipulation_artifact = self.start_data_manipulation(data_validation_artifact=data_validation_artifact)
+            model_generation_artifact = self.start_model_generation(data_manipulation_artifact=data_manipulation_artifact)
+            return model_generation_artifact
+        except Exception as e:
+            raise Exception(e, sys) from e
