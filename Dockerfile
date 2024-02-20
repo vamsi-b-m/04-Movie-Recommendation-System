@@ -1,14 +1,11 @@
-# Use the official Python base image
-FROM python:3.9
+FROM python:3.11.6
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+COPY requirements.txt requirements.txt
 
-# Install any needed dependencies specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-# Run app.py when the container launches
-CMD ["python", "app.py"]
+COPY . .
+
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]

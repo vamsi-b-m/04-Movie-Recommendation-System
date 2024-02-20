@@ -28,8 +28,6 @@ def get_posters():
 
 def start_pipeline(movie_name, movie_genre):
     try:
-        # Generate timestamp dynamically
-        timestamp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         pipeline = Pipeline(movie_name=movie_name, movie_genre=movie_genre)
         model_generation = pipeline.run_pipeline()
         posters_url_list = model_generation.posters_url_list
