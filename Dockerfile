@@ -4,7 +4,7 @@ FROM python:3.11.6
 RUN mkdir -p /root/.kaggle
 
 # Copy the .kaggle directory from the host machine to the Docker image
-COPY ~/.kaggle /root/.kaggle
+COPY ~/.kaggle/kaggle.json /root/.kaggle/
 
 # Set the working directory
 WORKDIR /app
