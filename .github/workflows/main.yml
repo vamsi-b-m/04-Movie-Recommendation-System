@@ -1,0 +1,37 @@
+name: Build and Deploy Movie Recommender into AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Source Code
+        uses: actions/checkoout@v3
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: docker build -t vamsibm36/repo001 .
+
+      - name: Publish Image to Docker Hub
+        run: docker push vamsibm36/repo001:0.0.1
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2
+    steps:
+
+      - name: Pull the Image from Docker Hub
+        run: docker pull <docker-username>/<docker-repo>:<tag-name>
+
+      - name: Delete Old Container
+        run: docker rm -f <container-name>
+
+      - name: Run Docker Container
+        run: docker run -d -p 5000:5000 <container-name> <docker-username>/<docker-repo>:<tag-name>
