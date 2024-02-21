@@ -6,7 +6,9 @@ COPY . /app
 RUN mkdir -p ~/.kaggle
 
 # Create a file inside .kaggle directory
-RUN echo {"username":$KAGGLE_USERNAME,"key":$KAGGLE_KEY} > ~/.kaggle/kaggle.json
+RUN echo {"username":"vamsibatta","key":"34d8ef587a38fc9d3304498dcc8b8dd4"} > ~/.kaggle/kaggle.json
+
+RUN chmod 600 ~/.kaggle/kaggle.json
 
 WORKDIR /app
 
