@@ -27,12 +27,9 @@ class DataIngestion:
         try:
             api = KaggleApi()
             api.authenticate()
+            
             dataset_url = self.data_ingestion_config.kaggle_dataset_url
             zip_data_dir = self.data_ingestion_config.zip_data_dir
-
-            # if os.path.exists(zip_data_dir):
-            #     #os.remove(zip_data_dir)
-            #     shutil.rmtree(zip_data_dir)
 
             os.makedirs(zip_data_dir, exist_ok=True)
             self.logger.info("Downloading dataset from Kaggle repo %s.", dataset_url)
