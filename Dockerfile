@@ -1,16 +1,16 @@
 FROM python:3.11.6
 
-# Copy the .kaggle directory from the host machine to the root directory of the container
-COPY /Users/vambat1/.kaggle /root/.kaggle
+# Create a directory for the .kaggle directory in the Docker image
+RUN mkdir -p /root/.kaggle
 
-# Copy the rest of the application files into the /app directory of the container
-COPY . /app
+# Copy the .kaggle directory from the host machine to the Docker image
+COPY .kaggle /root/.kaggle
 
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app
 
-# Install dependencies from requirements.txt
+# Install Python dependencies
 RUN pip3 install -r requirements.txt
 
-# Specify the command to run your application
+# Command to run the application
 CMD ["gunicorn", "--workers=4", "--bind", "0.0.0.0:5000", "app:app"]
