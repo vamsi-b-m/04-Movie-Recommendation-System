@@ -22,16 +22,16 @@ jobs:
       - name: Publish Image to Docker Hub
         run: docker push vamsibm36/repo001:0.0.1
 
-  deploy:
-    needs: build
-    runs-on: aws-ec2
-    steps:
+  # deploy:
+  #   needs: build
+  #   runs-on: aws-ec2
+  #   steps:
 
-      - name: Pull the Image from Docker Hub
-        run: docker pull vamsibm36/repo001:0.0.1
+  #     - name: Pull the Image from Docker Hub
+  #       run: docker pull vamsibm36/repo001:0.0.1
 
-      - name: Delete Old Container
-        run: docker rm -f movie-recommender-container
+  #     - name: Delete Old Container
+  #       run: docker rm -f movie-recommender-container
 
-      - name: Run Docker Container
-        run: docker run -d -p 5000:5000 --name movie-recommender-container vamsibm36/repo001:0.0.1
+  #     - name: Run Docker Container
+  #       run: docker run -d -p 5000:5000 --name movie-recommender-container vamsibm36/repo001:0.0.1

@@ -16,10 +16,14 @@ RUN chmod 600 /root/.kaggle/kaggle.json
 # Set the working directory
 WORKDIR /app
 
-EXPOSE 5000
-
 # Install Python dependencies
 RUN pip3 install -r requirements.txt
 
-# Command to run the application
-CMD ["python3", "app.py"]
+# Expose port 5000 to the outside world
+EXPOSE 5000
+
+# Define environment variable
+ENV FLASK_APP=app.py
+
+# Run the Flask application
+CMD ["flask", "run", "--host=0.0.0.0"]
