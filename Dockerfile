@@ -16,6 +16,8 @@ RUN chmod 600 /root/.kaggle/kaggle.json
 # Set the working directory
 WORKDIR /app
 
+EXPOSE 80 8080 5000
+
 # Install Python dependencies
 RUN pip3 install -r requirements.txt
 
